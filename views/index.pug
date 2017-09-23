@@ -1,0 +1,29 @@
+extends layout
+
+block navigation
+  container
+    nav(class='navbar' role='navigation')
+      div(class='navbar-brand')
+      div(class='navMenu')
+        div(class='navbar-left')
+          div(class='navbar-item is-hoverable')
+            a(class='navbar-item', href='#') Home
+            a(class='navbar-item', href='#') Services
+            a(class='navbar-item', href='#') Qui sommes-nous ?
+            
+        div(class='navbar-right')
+          div(class='navbar-item is-hoverable')
+            a(class='navbar-item', href='#') Se connecter
+
+
+block content
+  //- p Welcome to #{title}
+  section(class='hero is-primary')
+    div(class='hero-body')
+      div(class='container')
+        h1(class='title') SkyGuard
+        h2(class='subtitle') We make the sky safer with AI. 
+  
+block footer
+  h1= "Footer"
+  p footer

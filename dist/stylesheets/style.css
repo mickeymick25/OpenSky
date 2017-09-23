@@ -1,0 +1,8 @@
+@import '../../bulma/css/bulma.css';
+body {
+  background: #F5F5F5;
+}
+#container {
+  margin: 0 auto;
+  position: relative;
+}
