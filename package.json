@@ -20,7 +20,8 @@
     "serve-favicon": "~2.4.2"
   },
   "devDependencies": {
-    "connect-livereload": "^0.6.0"
+    "connect-livereload": "^0.6.0",
+    "gulp": "^3.9.1"
   },
   "main": "app.js",
   "author": "",
