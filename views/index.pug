@@ -24,11 +24,13 @@ block navigation
 
 block content
   //- p Welcome to #{title}
-  section(class='hero is-primary')
+  section(class='hero')
     div(class='hero-body')
       div(class='container')
-        h1(class='title') SkyGuard
-        h2(class='subtitle') We make the sky safer with AI. 
+        h1(class='title') SkyGuard #{img_photograph}
+        h2(class='subtitle') We make the sky safer with AI. #{img_description} 
+        p #{img_url} 
+        
   
 block footer
   h1= "Footer"
