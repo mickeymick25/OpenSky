@@ -2,7 +2,7 @@ extends layout
 
 block navigation
   container
-    nav(class='navbar' role='navigation' aria-label='main navigation')
+    nav(class='navbar is-transparent' role='navigation' aria-label='main navigation')
       div(class='navbar-brand')
         a(class='navbar-item' href='#')
           img(src='http://bulma.io/images/bulma-logo.png' alt='SkyGuard we make the sky safer' width='112' height='28')
@@ -24,14 +24,36 @@ block navigation
 
 block content
   //- p Welcome to #{title}
-  section(class='hero')
+  section(class='hero is-bold')
     div(class='hero-body')
       div(class='container')
-        h1(class='title') SkyGuard #{img_photograph}
-        h2(class='subtitle') We make the sky safer with AI. #{img_description} 
-        p #{img_url} 
+        h1(class='title') SkyGuard 
+        h2(class='subtitle') We make the sky safer with AI. 
+    
+    div(class='hero-form')
+      div(class='container')
         
+        div(class='field has-addons')
+          div(class='control')
+            input(class="input is-medium" type="text" placeholder="ICAO number")
+          div(class='control')
+            a(class='button is-primary is-medium') Search
+            
+          
+    div(class='caption')
+      div(class='photographname')
+        span
+      div(class='photocaption')
+        span
+  
+  section(class='section')
+    div(class='container')
+      h1(class='title') section
+      h2(class='subtitle') A simple container to divide your page into sections, like the one you're currently reading.
   
 block footer
-  h1= "Footer"
-  p footer
+  footer(class='footer')
+    h1= "Footer"
+    p footer
+
+  

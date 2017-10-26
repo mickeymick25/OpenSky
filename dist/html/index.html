@@ -9,7 +9,7 @@
   </head>
   <body>
     <container>
-      <nav class="navbar" role="navigation" aria-label="main navigation">
+      <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
         <div class="navbar-brand"><a class="navbar-item" href="#"><img src="http://bulma.io/images/bulma-logo.png" alt="SkyGuard we make the sky safer" width="112" height="28"></a>
           <button class="button navbar-burger"> <span></span><span></span><span></span></button>
         </div>
@@ -19,16 +19,69 @@
         </div>
       </nav>
     </container>
-    <section class="hero">
+    <section class="hero is-bold">
       <div class="hero-body">
         <div class="container">
           <h1 class="title">SkyGuard </h1>
-          <h2 class="subtitle">We make the sky safer with AI.  </h2>
-          <p> </p>
+          <h2 class="subtitle">We make the sky safer with AI. </h2>
         </div>
       </div>
+      <div class="hero-form">
+        <div class="container">
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input is-medium" type="text" placeholder="ICAO number">
+            </div>
+            <div class="control"><a class="button is-primary is-medium">Search</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <div class="photographname"><span></span></div>
+        <div class="photocaption"><span></span></div>
+      </div>
     </section>
-    <h1>Footer</h1>
-    <p>footer</p>
+    <section class="section">
+      <div class="container">
+        <h1 class="title">section</h1>
+        <h2 class="subtitle">A simple container to divide your page into sections, like the one you're currently reading.</h2>
+      </div>
+    </section>
+    <footer class="footer">
+      <h1>Footer</h1>
+      <p>footer</p>
+    </footer>
+    <script>
+      const clientId = 'c226804d0c4c8924afa47211d6037b677bd31083a26f21d6baccd7c1f8493cb6';
+
+var myhero = document.querySelector('.hero');
+var imgName = myhero.querySelector('.photographname span');
+var imgDescription = myhero.querySelector('.photocaption span');
+
+
+var host = "https://api.unsplash.com";
+var path = "/photos/random/?client_id="+clientId;
+var url_unsplash = host+path;
+
+
+fetch(url_unsplash)
+  .then(function(response){return response.json();})
+  .then(function(data){
+    myhero.style.backgroundImage= "url('"+data.urls.regular+"')";
+    imgName.textContent = data.user.name;
+    imgDescription.textContent = data.description;
+  });
+      var host = "https://opensky-network.org/api";
+var path = "/states/all";
+var url_unsplash = host+path;
+
+
+fetch(url_unsplash)
+  .then(function(response){return response.json();})
+  .then(function(data){
+    console.log("coucou mika :: " + data.time + ", "+data.states);
+  });
+
+    </script>
   </body>
 </html>

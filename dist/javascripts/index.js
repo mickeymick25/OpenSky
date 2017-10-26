@@ -19,31 +19,30 @@ var options = {
 };
 
 // only invoked if the path starts with '/' from the mount point
-router.use('/', function(req, res, next) {
-  console.log("Coucou Michael");
-  var url = options.host+options.path;
-  axios
-    .get(url)
-    .then(response => {
-      console.log(
-        `Title: ${response.data.description} -`,
-        `Name: ${response.data.user.name} -`,
-        `Photo_url: ${response.data.urls.regular} -`
-      );
-      unsplash_photo_name = response.data.user.name;
-      unsplash_photo_title = response.data.description;
-      unsplash_photo_url = response.data.urls.regular;
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  next();
-
-});
+// router.use('/', function(req, res, next) {
+//   console.log("Coucou Michael");
+//   var url = options.host+options.path;
+//   axios
+//     .get(url)
+//     .then(response => {
+//       console.log(
+//         `Title: ${response.data.description} -`,
+//         `Name: ${response.data.user.name} -`,
+//         `Photo_url: ${response.data.urls.regular} -`
+//       );
+//       unsplash_photo_name = response.data.user.name;
+//       unsplash_photo_title = response.data.description;
+//       unsplash_photo_url = response.data.urls.regular;
+//     })
+//     .catch(error => {
+//       console.log(error);
+//     });
+//   next();
+// });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'SkyGuard', img_photograph: unsplash_photo_name, img_description: unsplash_photo_title, img_url: unsplash_photo_url });
+  res.render('index', { title: 'SkyGuard' });
 });
 
 module.exports = router;
