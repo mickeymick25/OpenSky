@@ -6,39 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="stylesheets/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css">
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js"></script>
   </head>
   <body>
-    <container>
-      <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand"><a class="navbar-item" href="#"><img src="http://bulma.io/images/bulma-logo.png" alt="SkyGuard we make the sky safer" width="112" height="28"></a>
-          <button class="button navbar-burger"> <span></span><span></span><span></span></button>
-        </div>
-        <div class="navbar-menu is-active">
-          <div class="navbar-start"></div>
-          <div class="navbar-end"><a class="navbar-item">S'inscrire</a><a class="navbar-item">Se connecter</a></div>
-        </div>
-      </nav>
-    </container>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand"><a class="navbar-item" href="#"><img src="http://bulma.io/images/bulma-logo.png" alt="SkyGuard we make the sky safer" width="112" height="28"></a>
+        <div class="burger navbar-burger" data-target="navMenu"> <span></span><span></span><span></span></div>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start"></div>
+        <div class="navbar-end"><a class="navbar-item">S'inscrire</a><a class="navbar-item">Se connecter</a></div>
+      </div>
+    </nav>
     <section class="hero is-bold">
+      <div class="hero-map" id="map"></div>
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">SkyGuard </h1>
-          <h2 class="subtitle">We make the sky safer with AI. </h2>
-        </div>
-      </div>
-      <div class="hero-form">
-        <div class="container">
-          <div class="field has-addons">
-            <div class="control">
-              <input class="input is-medium" type="text" placeholder="ICAO number">
+          <div class="columns">
+            <div class="column"></div>
+            <div class="column is-three-quarters">
+              <h1 class="title">SkyGuard </h1>
+              <h2 class="subtitle">We make the sky safer with AI. </h2>
+              <div class="hero-form">
+                <div class="container">
+                  <div class="field has-addons">
+                    <div class="control">
+                      <input class="input is-medium" type="text" placeholder="ICAO number">
+                    </div>
+                    <div class="control"><a class="button is-primary is-medium">Search</a></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="control"><a class="button is-primary is-medium">Search</a></div>
+            <div class="column"></div>
           </div>
         </div>
-      </div>
-      <div class="caption">
-        <div class="photographname"><span></span></div>
-        <div class="photocaption"><span></span></div>
       </div>
     </section>
     <section class="section">
@@ -51,36 +54,70 @@
       <h1>Footer</h1>
       <p>footer</p>
     </footer>
-    <script>
-      const clientId = 'c226804d0c4c8924afa47211d6037b677bd31083a26f21d6baccd7c1f8493cb6';
-
-var myhero = document.querySelector('.hero');
-var imgName = myhero.querySelector('.photographname span');
-var imgDescription = myhero.querySelector('.photocaption span');
-
-
-var host = "https://api.unsplash.com";
-var path = "/photos/random/?client_id="+clientId;
-var url_unsplash = host+path;
-
-
-fetch(url_unsplash)
-  .then(function(response){return response.json();})
-  .then(function(data){
-    myhero.style.backgroundImage= "url('"+data.urls.regular+"')";
-    imgName.textContent = data.user.name;
-    imgDescription.textContent = data.description;
-  });
-      var host = "https://opensky-network.org/api";
+    <script>var host = "https://opensky-network.org/api";
 var path = "/states/all";
-var url_unsplash = host+path;
+var url_opensky = host+path;
+var jsonData = {};
 
-
-fetch(url_unsplash)
+fetch(url_opensky)
   .then(function(response){return response.json();})
   .then(function(data){
-    console.log("coucou mika :: " + data.time + ", "+data.states);
+    // from https://opensky-network.org/apidoc/rest.html
+    console.log("Nb Vols :: " + unixTimeToFormat(data.time) + " :: "+data.states.length);
+    for( var i=0; i< data.states.length; i++ ){
+      var icao          = data.states[i][0];
+      var callsign      = data.states[i][1];
+      var origin        = data.states[i][2];
+      var timePosition  = data.states[i][3];
+      var lastContact   = data.states[i][4];
+      var longitude     = data.states[i][5];
+      var latitude      = data.states[i][6];
+      var altitude      = data.states[i][7];
+      var onGround      = data.states[i][8];
+      var velocity      = data.states[i][9];
+      var heading       = data.states[i][10];
+      var verticalRate  = data.states[i][11];
+      var sensors       = data.states[i][12];
+      var baroAltitude  = data.states[i][13];
+      var squawk        = data.states[i][14];
+      var spi           = data.states[i][15];
+      var positionSource= data.states[i][16];
+
+      console.log(
+        "ICAO::"+icao
+        +" | Callsign::"+callsign
+        +" | Origin::"+origin
+        +" | Time::"+unixTimeToFormat(timePosition)
+        +" | LastContact::"+unixTimeToFormat(lastContact)
+        +" | longitude::"+longitude
+        +" | latitude::"+latitude
+        +" | altitude::"+altitude
+        +" | onGround::"+onGround
+        +" | velocity::"+velocity
+        +" | heading::"+heading
+        +" | verticalRate::"+verticalRate
+        +" | sensors::"+sensors
+        +" | baroAltitude::"+baroAltitude
+        +" | squawk::"+squawk
+        +" | spi::"+spi
+        +" | positionSource::"+positionSource
+      );
+    }
   });
+
+function unixTimeToFormat(unixTime){
+  // We create a new Javascript Date object based on the timestamp
+  // multiplied by 1000 so that the argument is in milliseconds, not seconds.
+  var date = new Date(unixTime*1000);
+  // Hours part from the timestamp
+  var hours = date.getHours();
+  // Minutes part from the timestamp
+  var minutes = "0" + date.getMinutes();
+  // Seconds part from the timestamp
+  var seconds = "0" + date.getSeconds();
+  // Will display time in hh:mm:ss format
+  return formattedTime = hours +':'+ minutes.substr(-2) +':'+ seconds.substr(-2);
+}
 
     </script>
   </body>

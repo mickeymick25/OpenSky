@@ -11,6 +11,11 @@ var unsplash_photo_name;
 var unsplash_photo_title;
 var unsplash_photo_url;
 
+var mapScripts = [{
+  script: 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js',
+  script: 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css'
+}];
+
 var options = {
   host: "https://api.unsplash.com",
   port: 443,
@@ -18,31 +23,9 @@ var options = {
   method: "GET"
 };
 
-// only invoked if the path starts with '/' from the mount point
-// router.use('/', function(req, res, next) {
-//   console.log("Coucou Michael");
-//   var url = options.host+options.path;
-//   axios
-//     .get(url)
-//     .then(response => {
-//       console.log(
-//         `Title: ${response.data.description} -`,
-//         `Name: ${response.data.user.name} -`,
-//         `Photo_url: ${response.data.urls.regular} -`
-//       );
-//       unsplash_photo_name = response.data.user.name;
-//       unsplash_photo_title = response.data.description;
-//       unsplash_photo_url = response.data.urls.regular;
-//     })
-//     .catch(error => {
-//       console.log(error);
-//     });
-//   next();
-// });
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'SkyGuard' });
+  res.render('index', { title: 'SkyGuard', scripts: mapScripts });
 });
 
 module.exports = router;

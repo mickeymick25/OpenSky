@@ -7,7 +7,9 @@ html
       
     link(rel='stylesheet', href='stylesheets/style.css')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')  
-      
+    
+    block scripts
+    
   body(class= title)
     //- bloc nav
     block navigation
@@ -19,5 +21,7 @@ html
     block footer
       
     script
-      include bgimage.js
-      include opensky.js
+      block script_perso
+      //- include bgimage.js
+      //- include opensky.js
+      //- include mapbox.js
