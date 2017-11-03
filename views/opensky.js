@@ -27,34 +27,39 @@ fetch(url_opensky)
     // from https://opensky-network.org/apidoc/rest.html
     console.log("Nb Vols :: " + unixTimeToFormat(data.time) + " :: "+data.states.length);
     jsonFlightData = {
-        "name": "flights_ADS-B_opensky",
-        "type": "geojson",
-        "data":[],
-        "layout": {
-            "icon-image": "{icon}-15",
-            "text-field": "{title}",
-            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-            "text-offset": [0, 0.6],
-            "text-anchor": "top"
-        }
+      "type":"geojson",
+      "data":{
+        "type": "FeatureCollection",
+        "features":[]
+      }
     };
 
     for( var i=0; i< data.states.length; i++ ){
-      jsonFlightData.data.push(
+      jsonFlightData.data.features.push(
         {
-        "type" : "flight",
-        "properties":{
-          "id": i,
-          "icao": data.states[i][0],
-          "callsign":data.states[i][1],
-          "maker-symbol":"monument"
-        },
+        "type":"flight",
         "geometry":{
-          "type":"Point",
-          "coordinates":[data.states[i][5],data.states[i][6]]
+          "type": "Point",
+          "coordinates":[data.states[i][5], data.states[i][6]]
+        },
+        "properties":{
+          "icao":           data.states[i][0],
+          "callsign":       data.states[i][1],
+          "origin":         data.states[i][2],
+          "timePosition":   data.states[i][3],
+          "lastContact":    data.states[i][4],
+          "altitude":       data.states[i][7],
+          "onGround":       data.states[i][8],
+          "velocity":       data.states[i][9],
+          "heading":        data.states[i][10],
+          "verticalRate":   data.states[i][11],
+          "sensors":        data.states[i][12],
+          "baroAltitude":   data.states[i][13],
+          "squawk":         data.states[i][14],
+          "spi":            data.states[i][15],
+          "positionSource": data.states[i][16]
         }
       });
-
       // jsonFlightData['id']            = i;
       // jsonFlightData['icao']          = data.states[i][0];
       // jsonFlightData['callsign']      = data.states[i][1];
@@ -87,29 +92,29 @@ function drawMap(){
       container: 'map', // container id
       style: 'mapbox://styles/mickeymick25/cj9ffl8ym04tj2ro4zbvmj9n2', // stylesheet location
       center: [2.095, 48.745], // starting position [lng, lat]
-      zoom: 7, // starting zoom
-      bearing: 21.60,
-      pitch: 60
+      zoom: 5, // starting zoom
+      //bearing: 21.60,
+      //pitch: 60
   });
+
   // Add controls to the map
   var nav = new mapboxgl.NavigationControl();
   map.addControl(nav, 'bottom-right');
 
+  //
   map.on('load', function(){
-    // map.addLayer({
-    //
-    // });
-    console.log('Map is loading...');
-
-  });
-  // Add JsonData to the map
-  addDataToMap();
-}
-
-// 3 - On ajoute les data à la map
-function addDataToMap(){
-  map.addSource('flights',{
-    type: 'geojson',
-    data: jsonFlightData
+    // Define a style for all the flights.
+    map.addLayer({
+      "id":"points",
+      "type":"symbol",
+      "source": jsonFlightData,
+      "layout":{
+        "icon-image": "airport-15",
+        "icon-rotate": { "type": "identity", "property": "heading" }
+      },
+      // "paint": {
+      //   "fill-color": "#00d1b2"
+      // }
+    });
   });
 }
