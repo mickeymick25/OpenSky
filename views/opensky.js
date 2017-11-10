@@ -3,6 +3,7 @@ var path = "/states/all";
 var url_opensky = host+path;
 var map;
 var jsonFlightData = {};
+var jsonFlightOpensky = {};
 
 // Helpers
 function unixTimeToFormat(unixTime){
@@ -25,8 +26,12 @@ function getFlights(){
   fetch(url_opensky)
     .then(function(response){return response.json();})
     .then(function(data){
+      var alt_min;
+      var alt_max;
+
       // from https://opensky-network.org/apidoc/rest.html
       console.log("Nb Vols :: " + unixTimeToFormat(data.time) + " :: "+data.states.length);
+
       jsonFlightData = {
         "type":"geojson",
         "data":{
@@ -61,28 +66,25 @@ function getFlights(){
             "positionSource": data.states[i][16]
           }
         });
-        // jsonFlightData['id']            = i;
-        // jsonFlightData['icao']          = data.states[i][0];
-        // jsonFlightData['callsign']      = data.states[i][1];
-        // jsonFlightData['origin']        = data.states[i][2];
-        // jsonFlightData['timePosition']  = unixTimeToFormat(data.states[i][3]);
-        // jsonFlightData['lastContact']   = unixTimeToFormat(data.states[i][4]);
-        // jsonFlightData['longitude']     = data.states[i][5];
-        // jsonFlightData['latitude']      = data.states[i][6];
-        // jsonFlightData['altitude']      = data.states[i][7];
-        // jsonFlightData['onGround']      = data.states[i][8];
-        // jsonFlightData['velocity']      = data.states[i][9];
-        // jsonFlightData['heading']       = data.states[i][10];
-        // jsonFlightData['verticalRate']  = data.states[i][11];
-        // jsonFlightData['sensors']       = data.states[i][12];
-        // jsonFlightData['baroAltitude']  = data.states[i][13];
-        // jsonFlightData['squawk']        = data.states[i][14];
-        // jsonFlightData['spi']           = data.states[i][15];
-        // jsonFlightData['positionSource']= data.states[i][16];
+
+        if(alt_min == undefined){
+          alt_min = data.states[i][7];
+        }
+        if(alt_max == undefined){
+          alt_max = data.states[i][7];
+        }
+
+        if( data.states[i][7] < alt_min && alt_min != undefined ){
+          alt_min = data.states[i][7];
+        }
+        if( data.states[i][7] > alt_max && alt_max != undefined ){
+          alt_max = data.states[i][7];
+        }
       }
-      console.log(jsonFlightData);
-      // On dessine la map
-      //this.drawMap();
+      // console.log(jsonFlightData);
+      console.log("alt_min :: "+alt_min);
+      console.log("alt_max :: "+alt_max);
+
     });
 }
 
@@ -94,9 +96,9 @@ function drawMap(){
       container: 'map', // container id
       style: 'mapbox://styles/mickeymick25/cj9ffl8ym04tj2ro4zbvmj9n2', // stylesheet location
       center: [2.095, 48.745], // starting position [lng, lat]
-      zoom: 5, // starting zoom
+      zoom: 8, // starting zoom
       //bearing: 21.60,
-      pitch: 60
+      //pitch: 40
   });
 
   // Add controls to the map
@@ -105,28 +107,54 @@ function drawMap(){
 
   //
   map.on('load', function(){
-    window.setInterval(function() {
-        this.getFlights();
-        map.getSource('points').setData(jsonFlightData.data);
-    }, 10000);
+    map.addSource('points', {
+      type: 'geojson',
+      data: jsonFlightData.data
+    });
 
-    map.addSource('points', { type: 'geojson', data: jsonFlightData.data });
     // Define a style for all the flights.
     map.addLayer({
-      "id":"points",
+      "id":"flights",
       "type":"symbol",
       "source": "points",
       "layout":{
         "icon-image": "airport-15",
         "icon-rotate": { "type": "identity", "property": "heading" },
+        "icon-allow-overlap": false,
+        "icon-ignore-placement": false,
         "icon-pitch-alignment" : "map"
       },
-      // "paint": {
-      //   "fill-color": "#00d1b2"
-      // }
+      "paint":{
+        // "icon-color": "#FF0000"
+      }
     });
-    //map.setPitch(60);
   });
+
+  /* Define interaction with flights */
+  map.on('click', 'flights', function(e){
+    map.flyTo({center: e.features[0].geometry.coordinates});
+    console.log("flight event: Flight clicked!");
+    console.log("flight event: Flight "+e.features[0].properties.callsign);
+  });
+
+  map.on('mouseenter', 'flights', function(){
+    console.log("flight event: Mouse entered!");
+  });
+
+  map.on('mouseleave', 'flights', function(){
+    console.log("flight event: Mouse leaved!");
+  });
+
+  window.setInterval(function() {
+    console.log("------------------------------------ Log");
+    getFlights();
+    map.getSource('points').setData(jsonFlightData.data);
+  }, 10500);
+
+  // window.setInterval(function(){
+  //
+  // }, 1000);
+
 }
 
 this.drawMap();
